@@ -230,61 +230,65 @@ function calculateTicketPrice(ticketData, ticketInfo) {
  */
 function purchaseTickets(ticketData, purchases) {
   let finalReceipt = "";
-
   const childMember = "Child Membership Admission: $";
   const adultMember = "Adult Membership Admission: $";
   const seniorMember = "Senior Membership Admission: $";
-
   const childGeneral = "Child General Admission: $";
   const adultGeneral = "Adult General Admission: $";
   const seniorGeneral = "Senior General Admission: $";
-
   const lineOne =
     "Thank you for visiting the Dinosaur Museum!\n-------------------------------------------\n";
   // Line items go here
   let lineItems = [];
   const lineTwo = "\n-------------------------------------------\n";
   const totalLine = "TOTAL: $";
+
   let grandTotal = 0;
+
+  for (let ticketInfo of purchases){
+    console.log(calculateTicketPrice(ticketData, ticketInfo) / 100);
+  }
+  
 
   for (let ticketInfo of purchases) {
     // <--- I swear to God watch out for these global variables
 
     // --------------------------- ERROR CHECKING -----------------------
-
-    //check against ticket types
-    if (
-      ticketInfo.ticketType !== "general" &&
-      ticketInfo.ticketType !== "membership"
-    ) {
-      return `Ticket type '${ticketInfo.ticketType}' cannot be found.`;
-    }
-    //check against entrant types
-    if (
-      ticketInfo.entrantType !== "senior" &&
-      ticketInfo.entrantType !== "child" &&
-      ticketInfo.entrantType !== "adult"
-    ) {
-      return `Entrant type '${ticketInfo.entrantType}' cannot be found.`;
-    }
-    //check against extras
-    // (I don't like this)
-    let tooLegit = false;
-
-    if (ticketInfo.extras.length !== 0) {
-      for (let i = 0; i < ticketInfo.extras.length; i++) {
-        if (ticketInfo.extras[i] == "movie") {
-          tooLegit = true;
-        }
-        if (ticketInfo.extras[i] == "terrace") {
-          tooLegit = true;
-        }
-        if (ticketInfo.extras[i] == "education") {
-          tooLegit = true;
-        }
+    {
+      //check against ticket types
+      if (
+        ticketInfo.ticketType !== "general" &&
+        ticketInfo.ticketType !== "membership"
+      ) {
+        return `Ticket type '${ticketInfo.ticketType}' cannot be found.`;
       }
-      if (!tooLegit) {
-        return `Extra type '${ticketInfo.extras}' cannot be found.`;
+      //check against entrant types
+      if (
+        ticketInfo.entrantType !== "senior" &&
+        ticketInfo.entrantType !== "child" &&
+        ticketInfo.entrantType !== "adult"
+      ) {
+        return `Entrant type '${ticketInfo.entrantType}' cannot be found.`;
+      }
+      //check against extras
+      // (I don't like this)
+      let tooLegit = false;
+
+      if (ticketInfo.extras.length !== 0) {
+        for (let i = 0; i < ticketInfo.extras.length; i++) {
+          if (ticketInfo.extras[i] == "movie") {
+            tooLegit = true;
+          }
+          if (ticketInfo.extras[i] == "terrace") {
+            tooLegit = true;
+          }
+          if (ticketInfo.extras[i] == "education") {
+            tooLegit = true;
+          }
+        }
+        if (!tooLegit) {
+          return `Extra type '${ticketInfo.extras}' cannot be found.`;
+        }
       }
     }
     // --------------------------- ERROR CHECKING END -----------------------
@@ -298,115 +302,113 @@ function purchaseTickets(ticketData, purchases) {
     let lineItem = "";
     let choiceExtras = [];
 
-    // grandTotal used for final tally
-    // const childMember = 'Child Membership Admission: ';
-    // const adultMember = 'Adult Membership Admission: ';
-    // const seniorMember = 'Senior Membership Admission: ';
-
-    // const childGeneral = 'Child General Admission: ';
-    // const adultGeneral = 'Adult General Admission: ';
-    // const seniorGeneral = 'Senior Membership Admission: ';
-
     //What kind of ticket?
-
-    switch (ticketType) {
-      case "general":
-        switch (age) {
-          case "child":
-            ticketPrice += ticketData.general.priceInCents.child;            
-            lineItem = childGeneral;
-            break;
-          case "adult":
-            ticketPrice += ticketData.general.priceInCents.adult;            
-            lineItem = adultGeneral;
-            break;
-          case "senior":
-            ticketPrice += ticketData.general.priceInCents.senior;            
-            lineItem = seniorGeneral;
-            break;
-        }
-        break;
-      case "membership":
-        switch (age) {
-          case "child":
-            ticketPrice += ticketData.membership.priceInCents.child;            
-            lineItem = childMember;
-            break;
-          case "adult":
-            ticketPrice += ticketData.membership.priceInCents.adult;            
-            lineItem = adultMember;
-            break;
-          case "senior":
-            ticketPrice += ticketData.membership.priceInCents.senior;            
-            lineItem = seniorMember;
-            break;
-        }
-        break;
+    {
+      switch (ticketType) {
+        case "general":
+          switch (age) {
+            case "child":
+              ticketPrice += ticketData.general.priceInCents.child;
+              lineItem = childGeneral;
+              break;
+            case "adult":
+              ticketPrice += ticketData.general.priceInCents.adult;
+              lineItem = adultGeneral;
+              break;
+            case "senior":
+              ticketPrice += ticketData.general.priceInCents.senior;
+              lineItem = seniorGeneral;
+              break;
+          }
+          break;
+        case "membership":
+          switch (age) {
+            case "child":
+              ticketPrice += ticketData.membership.priceInCents.child;
+              lineItem = childMember;
+              break;
+            case "adult":
+              ticketPrice += ticketData.membership.priceInCents.adult;
+              lineItem = adultMember;
+              break;
+            case "senior":
+              ticketPrice += ticketData.membership.priceInCents.senior;
+              lineItem = seniorMember;
+              break;
+          }
+          break;
+      }
     }
 
     //What, if any, extras.
-    if (extras.length != 0) {
-      for (let choice in extras) {
-        switch (extras[choice]) {
-          case "movie":
-            choiceExtras.push("Movie Access");
-            switch (age) {
-              case "child":
-                ticketPrice += ticketData.extras.movie.priceInCents.child;
-                break;
-              case "adult":
-                ticketPrice += ticketData.extras.movie.priceInCents.adult;
-                break;
-              case "senior":
-                ticketPrice += ticketData.extras.movie.priceInCents.senior;
-                break;
-            }
-            break;
-          case "education":
-            choiceExtras.push("Education Access");
-            switch (age) {
-              case "child":
-                ticketPrice += ticketData.extras.education.priceInCents.child;
-                break;
-              case "adult":
-                ticketPrice += ticketData.extras.education.priceInCents.adult;
-                break;
-              case "senior":
-                ticketPrice += ticketData.extras.education.priceInCents.senior;
-                break;
-            }
-            break;
-          case "terrace":
-            choiceExtras.push("Terrace Access");
-            switch (age) {
-              case "child":
-                ticketPrice += ticketData.extras.terrace.priceInCents.child;
-                break;
-              case "adult":
-                ticketPrice += ticketData.extras.terrace.priceInCents.adult;
-                break;
-              case "senior":
-                ticketPrice += ticketData.extras.terrace.priceInCents.senior;
-                break;
-            }
-            break;
+    {
+      if (extras.length != 0) {
+        for (let choice in extras) {
+          switch (extras[choice]) {
+            case "movie":
+              choiceExtras.push("Movie Access");
+              switch (age) {
+                case "child":
+                  ticketPrice += ticketData.extras.movie.priceInCents.child;
+                  break;
+                case "adult":
+                  ticketPrice += ticketData.extras.movie.priceInCents.adult;
+                  break;
+                case "senior":
+                  ticketPrice += ticketData.extras.movie.priceInCents.senior;
+                  break;
+              }
+              break;
+            case "education":
+              choiceExtras.push("Education Access");
+              switch (age) {
+                case "child":
+                  ticketPrice += ticketData.extras.education.priceInCents.child;
+                  break;
+                case "adult":
+                  ticketPrice += ticketData.extras.education.priceInCents.adult;
+                  break;
+                case "senior":
+                  ticketPrice +=
+                    ticketData.extras.education.priceInCents.senior;
+                  break;
+              }
+              break;
+            case "terrace":
+              choiceExtras.push("Terrace Access");
+              switch (age) {
+                case "child":
+                  ticketPrice += ticketData.extras.terrace.priceInCents.child;
+                  break;
+                case "adult":
+                  ticketPrice += ticketData.extras.terrace.priceInCents.adult;
+                  break;
+                case "senior":
+                  ticketPrice += ticketData.extras.terrace.priceInCents.senior;
+                  break;
+              }
+              break;
+          }
         }
       }
     }
 
-    lineItem += (ticketPrice / 100).toFixed(2);
-    if (choiceExtras.length > 0) {
-      lineItem += " (";
-      lineItem += choiceExtras[0];
-      if (choiceExtras.length > 1) {
-        for (let i = 1; i < choiceExtras.length; i++) {
-          lineItem += ", " + choiceExtras[i];
+    //Line item construction
+    {
+      lineItem += (ticketPrice / 100).toFixed(2);
+      if (choiceExtras.length > 0) {
+        lineItem += " (";
+        lineItem += choiceExtras[0];
+        if (choiceExtras.length > 1) {
+          for (let i = 1; i < choiceExtras.length; i++) {
+            lineItem += ", " + choiceExtras[i];
+          }
         }
+        lineItem += ")";
       }
-      lineItem += ")";
+      lineItems.push(lineItem);
+      grandTotal += ticketPrice;
     }
-    lineItems.push(lineItem);
-    grandTotal += ticketPrice;
 
     /* /!\ /!\ END OF LOOP RIGHT HERE - RIGHT HERE YOU BUFFOON /!\ /!\ */
   }
