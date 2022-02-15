@@ -247,8 +247,8 @@ function purchaseTickets(ticketData, purchases) {
 
   for (let ticketInfo of purchases){
     console.log(calculateTicketPrice(ticketData, ticketInfo) / 100);
+    console.log(!isNaN(calculateTicketPrice(ticketData, ticketInfo)));
   }
-  
 
   for (let ticketInfo of purchases) {
     // <--- I swear to God watch out for these global variables
